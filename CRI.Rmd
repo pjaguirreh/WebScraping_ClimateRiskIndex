@@ -14,11 +14,11 @@ library(purrr)
 ```
 
 ```{r Cargar datos PDF}
-gw2015 <- "https://germanwatch.org/sites/germanwatch.org/files/publication/10333.pdf" %>% extract_tables() 
-gw2016 <- "https://germanwatch.org/sites/germanwatch.org/files/publication/13503.pdf" %>% extract_tables()  
-gw2017 <- "https://germanwatch.org/sites/germanwatch.org/files/publication/16411.pdf" %>% extract_tables()  
-gw2018 <- "https://germanwatch.org/sites/germanwatch.org/files/publication/20432.pdf" %>% extract_tables()  
-gw2019 <- "https://germanwatch.org/sites/germanwatch.org/files/Global%20Climate%20Risk%20Index%202019_2.pdf" %>% extract_tables() 
+gw2015 <- "https://germanwatch.org/sites/germanwatch.org/files/publication/10333.pdf" %>% extract_tables(pages = c(28:31)) 
+gw2016 <- "https://germanwatch.org/sites/germanwatch.org/files/publication/13503.pdf" %>% extract_tables(pages = c(27:31))  
+gw2017 <- "https://germanwatch.org/sites/germanwatch.org/files/publication/16411.pdf" %>% extract_tables(pages = c(26:30))  
+gw2018 <- "https://germanwatch.org/sites/germanwatch.org/files/publication/20432.pdf" %>% extract_tables(pages = c(27:30))  
+gw2019 <- "https://germanwatch.org/sites/germanwatch.org/files/Global%20Climate%20Risk%20Index%202019_2.pdf" %>% extract_tables(pages = c(28:31)) 
 ```
 
 ```{r}
@@ -38,8 +38,7 @@ for (j in c("gw2015", "gw2016", "gw2017", "gw2018", "gw2019")){
   for (i in 1:n){
     assign(paste0(j, ".", i), map(l, as.data.frame) %>% 
              `[[`(i) %>% 
-             `[`(-1,c(1,2)) %>% 
-             filter(!is.na(V1)))
+             `[`(-1,c(1,2)))
   }
 }
 
