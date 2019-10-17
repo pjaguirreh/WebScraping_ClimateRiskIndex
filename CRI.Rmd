@@ -75,11 +75,21 @@ for (i in c("gw2015.1", "gw2015.2", "gw2015.3", "gw2015.4",
              filter(V1 != "")
              )
   } else {
-    df %>%
-      filter(V1 != "")
+    assign(i, df %>%
+             filter(V1 != "")
+           )
   }
 }
 
+for (j in c("gw2015.1", "gw2015.2", "gw2015.3", "gw2015.4", 
+            "gw2016.2", "gw2016.3", "gw2016.4", "gw2016.5", "gw2016.6",
+            "gw2017.2", "gw2017.3", "gw2017.4", "gw2017.5",
+            "gw2018.1", "gw2018.2", "gw2018.3", "gw2018.4",
+            "gw2019.1", "gw2019.2", "gw2019.3", "gw2019.4")) {
+  df <- eval(parse(text = j))
+  colnames(df) <- c("CRI_ranking", "pais")
+  assign(j, df)
+}
 ```
 
 ```{r}
@@ -89,22 +99,22 @@ assign("gw2015_final",
                    eval(parse(text = "gw2015.3")),
                    eval(parse(text = "gw2015.4"))
                    )
-       )
+       )  
 
 assign("gw2016_final", 
-         bind_rows(eval(parse(text = "gw2016.1")),
-                   eval(parse(text = "gw2016.2")),
+         bind_rows(eval(parse(text = "gw2016.2")),
                    eval(parse(text = "gw2016.3")),
                    eval(parse(text = "gw2016.4")),
-                   eval(parse(text = "gw2016.5"))
+                   eval(parse(text = "gw2016.5")),
+                   eval(parse(text = "gw2016.6"))
                    )
        )
 
 assign("gw2017_final", 
-         bind_rows(eval(parse(text = "gw2017.1")),
-                   eval(parse(text = "gw2017.2")),
+         bind_rows(eval(parse(text = "gw2017.2")),
                    eval(parse(text = "gw2017.3")),
-                   eval(parse(text = "gw2017.4"))
+                   eval(parse(text = "gw2017.4")),
+                   eval(parse(text = "gw2017.5"))
                    )
        )
 
@@ -123,19 +133,27 @@ assign("gw2019_final",
                    eval(parse(text = "gw2019.4"))
                    )
        )
+ 
+rm(gw2015.1, gw2015.2, gw2015.3, gw2015.4,
+   gw2016.2, gw2016.3, gw2016.4, gw2016.5, gw2016.6,
+   gw2017.2, gw2017.3, gw2017.4, gw2017.5,
+   gw2018.1, gw2018.2, gw2018.3, gw2018.4,
+   gw2019.1, gw2019.2, gw2019.3, gw2019.4)
 
-rm(gw2015.1,gw2015.2,gw2015.3,gw2015.4,
-   gw2016.1,gw2016.2,gw2016.3,gw2016.4,gw2016.5,
-   gw2017.1,gw2017.2,gw2017.3,gw2017.4,
-   gw2018.1,gw2018.2,gw2018.3,gw2018.4,
-   gw2019.1,gw2019.2,gw2019.3,gw2019.4)
+gw2016_final <- gw2016_final[-20,]
 ```
 
 ```{r}
-gw2015_final[-1,]
-gw2016_final[-c(1:2),]
-gw2017_final[-1,]
-gw2018_final[-c(1:3),]
-gw2019_final[-c(1:3),]
+for (i in c("gw2015_final", "gw2016_final", "gw2017_final", "gw2018_final", "gw2019_final")){
+  df <- eval(parse(text = i))
+  assign(i, df %>% 
+           mutate(CRI_ranking = as.numeric(CRI_ranking)))
+}
+```
+
+```{r}
+setdiff(gw2015_final$pais, gw2016_final$pais)
+setdiff(gw2015_final$pais, gw2017_final$pais)
+setdiff(gw2015_final$pais, gw2018_final$pais)
 ```
 
