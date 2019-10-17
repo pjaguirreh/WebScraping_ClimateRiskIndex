@@ -22,19 +22,11 @@ gw2019 <- "https://germanwatch.org/sites/germanwatch.org/files/Global%20Climate%
 ```
 
 ```{r}
-gw2015 <- gw2015[14:17]
-gw2016 <- gw2016[16:20]
-gw2017 <- gw2017[13:16]
-gw2018 <- gw2018[13:16]
-gw2019 <- gw2019[11:14]
-```
-
-```{r}
 for (j in c("gw2015", "gw2016", "gw2017", "gw2018", "gw2019")){
   
   l <- eval(parse(text = j))
   n <- length(l)
-  
+
   for (i in 1:n){
     assign(paste0(j, ".", i), map(l, as.data.frame) %>% 
              `[[`(i) %>% 
@@ -42,6 +34,55 @@ for (j in c("gw2015", "gw2016", "gw2017", "gw2018", "gw2019")){
   }
 }
 
+for (i in 2:4){
+    assign(paste0("gw2019", ".", i), map(gw2019, as.data.frame) %>% 
+             `[[`(i) %>% 
+             `[`(-1,c(2,3)))
+}
+
+assign(paste0("gw2016", ".", 2), map(gw2016, as.data.frame) %>% 
+             `[[`(2) %>% 
+             `[`(-1,c(1)) %>% 
+         as.data.frame())
+
+assign(paste0("gw2016", ".", 4), map(gw2016, as.data.frame) %>% 
+             `[[`(4) %>% 
+             `[`(-1,c(1,2)) %>% 
+         as.data.frame())
+
+rm(gw2016.1, gw2017.1)
+
+colnames(gw2016.2) <- "V1"
+colnames(gw2019.2) <- c("V1", "v2")
+colnames(gw2019.3) <- c("V1", "v2")
+colnames(gw2019.4) <- c("V1", "v2")
+
+gw2016.2 <- gw2016.2 %>% 
+  separate(V1, into = c("V1", "V2"))
+
+
+for (i in c("gw2015.1", "gw2015.2", "gw2015.3", "gw2015.4", 
+            "gw2016.2", "gw2016.3", "gw2016.4", "gw2016.5", "gw2016.6",
+            "gw2017.2", "gw2017.3", "gw2017.4", "gw2017.5",
+            "gw2018.1", "gw2018.2", "gw2018.3", "gw2018.4",
+            "gw2019.1", "gw2019.2", "gw2019.3", "gw2019.4")){
+  
+  df <- eval(parse(text = i))
+  
+  if (df[1,1] == "Rank" | df[1,1] == "Total"){
+    assign(i, df[-1,] %>% 
+             as.data.frame() %>% 
+             filter(V1 != "")
+             )
+  } else {
+    df %>%
+      filter(V1 != "")
+  }
+}
+
+```
+
+```{r}
 assign("gw2015_final", 
          bind_rows(eval(parse(text = "gw2015.1")),
                    eval(parse(text = "gw2015.2")),
